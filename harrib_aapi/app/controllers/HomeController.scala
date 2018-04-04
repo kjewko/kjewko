@@ -20,7 +20,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
    * a path of `/`.
    */
   def index(content: String) = Action { implicit request: Request[AnyContent] =>
-    Ok(api404())
+    Status(404)(api404())
   }
 
   def apiContent(content: String) = Action { implicit request: Request[AnyContent] =>
