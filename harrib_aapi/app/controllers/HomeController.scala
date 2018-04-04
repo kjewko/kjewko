@@ -1,5 +1,7 @@
 package controllers
 
+import java.sql.DriverManager
+import java.sql.Connection
 import javax.inject._
 import play.api._
 import play.api.mvc._
@@ -49,6 +51,9 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
         case _ =>
         if (content.contains("domains."))
           Status(400)(api400)
+        else if (content == "xXx") {
+          Status(400)(select(content))
+        }
         else
           Status(404)(api404())
       }    
@@ -67,5 +72,42 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
           ( "datas"     ->  JsArray())
       )
     )
-   
+
+  def select(content: String) : JsObject = {
+    val driver = "com.mysql.jdbc.Driver"
+    val url = "jdbc:mysql://localhost/mysql"
+    val username = "root"
+    val password = "toor"
+
+    // there's probably a better way to do this
+    var connection:Connection = null
+
+    try {
+      // make the connection
+      Class.forName(driver)
+      connection = DriverManager.getConnection(url, username, password)
+
+      // create the statement, and run the select query
+      var hosts : List[String] = null
+      var users : List[String] = null
+      val statement = connection.createStatement()
+      val resultSet = statement.executeQuery("SELECT host, user FROM user")
+      while ( resultSet.next() ) {
+        val host = resultSet.getString("host")
+        val user = resultSet.getString("user")
+        hosts = host :: hosts
+        users = user :: users
+      }
+      JsObject(
+        Seq(( "hosts" -> JsArray(hosts)),
+            ( "users" -> JsArray(users))
+        )
+      )
+    } catch {
+      case e => JsObject(
+        Seq(( "printStackTrace" -> JsString(e.toString)))
+        )
+    }
+    connection.close()
+  }
 }
