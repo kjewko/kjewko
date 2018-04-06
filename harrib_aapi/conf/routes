@@ -4,6 +4,7 @@
 # ~~~~
 
 # An example controller showing a sample home page
+GET 	/api/domains/:val	    controllers.HomeController.apiDomain(val)
 GET     /api/:val                   controllers.HomeController.apiContent(val)
 GET     /*path                      controllers.HomeController.index(path)
 

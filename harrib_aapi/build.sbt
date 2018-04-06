@@ -9,6 +9,7 @@ scalaVersion := "2.12.4"
 
 libraryDependencies += guice
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
+libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.12"
 
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "harrib_a.controllers._"
